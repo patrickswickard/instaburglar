@@ -1,0 +1,14 @@
+import re
+
+for i in range(11,70):
+  infilename = 'allurls' + str(i) + '.txt'
+  outfilename = 'spit_url' + str(i) + '.html'
+with open(infilename) as fd:
+  lines = fd.read().splitlines()
+  for line in lines:
+    hit = re.findall(r"\?stp=dst-jpg_e35&",line)
+    if hit:
+      count += 1
+      print("<a href=\"" + line + "\">LINK " + str(count) + "</a><br>")
+
+
