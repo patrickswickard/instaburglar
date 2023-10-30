@@ -1,7 +1,7 @@
 import re
 
-file = 'instapost7.txt'
-with open(file) as fd:
+filename = 'instapost7.txt'
+with open(filename) as fd:
   lines = fd.read().splitlines()
 
 # find and report
