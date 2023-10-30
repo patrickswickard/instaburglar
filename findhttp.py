@@ -1,6 +1,6 @@
 import re
 
-file = 'instapost4.txt'
+file = 'instapost6.txt'
 with open(file) as fd:
   lines = fd.read().splitlines()
 
