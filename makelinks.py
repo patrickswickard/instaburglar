@@ -1,6 +1,6 @@
 import re
 
-file = 'allurls2.txt'
+file = 'allurls3.txt'
 with open(file) as fd:
   lines = fd.read().splitlines()
 
