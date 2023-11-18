@@ -1,2 +1,6 @@
 mysecret.py
 cache
+NEXTSET.json
+__pycache__/
+all_data_list.json
+
