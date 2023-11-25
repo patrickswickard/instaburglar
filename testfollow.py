@@ -30,16 +30,16 @@ my_user_following_response = my_user.get_following_list_set(username,my_user_app
 
 all_data_list = my_user.get_all_data_list(username, sessionid)
 
-print(json.dumps(all_data_list))
+#print(json.dumps(all_data_list))
 outfilename = 'all_data_list.json'
 thisoutfile = open(outfilename, 'w')
 thisoutfile.write(json.dumps(all_data_list))
 
-for entry in all_data_list:
-  print('******************************************************')
-  print('******************************************************')
-  print(entry['display_url'])
+#for entry in all_data_list:
+#  print('******************************************************')
+#  print('******************************************************')
+#  print(entry['display_url'])
 
 
 #print(my_user_followers_response)
-print(my_user_following_response)
+print(json.dumps(my_user_following_response))
