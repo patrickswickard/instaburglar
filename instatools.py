@@ -243,6 +243,37 @@ class Instauser:
     response_hash = json.loads(response.text)
     return response_hash
 
+  def get_followers_list_set(self,username,app_id,sessionid):
+    #request_url = 'https://www.instagram.com/api/v1/users/web_profile_info/?username=' + username
+    request_url = 'https://www.instagram.com/api/v1/friendships/13714580843/followers/?count=12&search_surface=follow_list_page' + username
+    header_hash = {
+    }
+    # this is probably hard-coded but we parse it anyway
+    # if/when this breaks try the hard-coded version
+    #header_hash['x-ig-app-id'] = '936619743392459'
+    header_hash['Cookie'] = 'sessionid=' + sessionid + '; ds_user_id=CAFE'
+    header_hash['x-ig-app-id'] = app_id
+    headers = header_hash
+    response = requests.get(request_url, headers=headers)
+    response_hash = json.loads(response.text)
+    return response_hash
+
+  def get_following_list_set(self,username,app_id,sessionid):
+    #request_url = 'https://www.instagram.com/api/v1/users/web_profile_info/?username=' + username
+    request_url = 'https://www.instagram.com/api/v1/friendships/13714580843/following/?count=12&search_surface=follow_list_page' + username
+    header_hash = {
+    }
+    # this is probably hard-coded but we parse it anyway
+    # if/when this breaks try the hard-coded version
+    #header_hash['x-ig-app-id'] = '936619743392459'
+    header_hash['Cookie'] = 'sessionid=' + sessionid + '; ds_user_id=CAFE'
+    header_hash['x-ig-app-id'] = app_id
+    headers = header_hash
+    response = requests.get(request_url, headers=headers)
+    response_hash = json.loads(response.text)
+    return response_hash
+
+
   def get_user_from_response_hash(self,response_hash):
     data = response_hash.get('data')
     if data:
