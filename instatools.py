@@ -243,9 +243,11 @@ class Instauser:
     response_hash = json.loads(response.text)
     return response_hash
 
-  def get_followers_list_set(self,username,app_id,sessionid):
+  def get_followers_list_set(self,username,app_id,sessionid,count,max_id):
+    count = 12
+    max_id = 0
     #request_url = 'https://www.instagram.com/api/v1/users/web_profile_info/?username=' + username
-    request_url = 'https://www.instagram.com/api/v1/friendships/13714580843/followers/?count=12&search_surface=follow_list_page' + username
+    request_url = 'https://www.instagram.com/api/v1/friendships/13714580843/followers/?count=' + str(count) + '&search_surface=follow_list_page' + username
     header_hash = {
     }
     # this is probably hard-coded but we parse it anyway
@@ -258,9 +260,11 @@ class Instauser:
     response_hash = json.loads(response.text)
     return response_hash
 
-  def get_following_list_set(self,username,app_id,sessionid):
+  def get_following_list_set(self,username,app_id,sessionid,count,max_id):
+    count = 12
+    max_id = 0
     #request_url = 'https://www.instagram.com/api/v1/users/web_profile_info/?username=' + username
-    request_url = 'https://www.instagram.com/api/v1/friendships/13714580843/following/?count=12&search_surface=follow_list_page' + username
+    request_url = 'https://www.instagram.com/api/v1/friendships/13714580843/following/?count=' + str(count) + '&search_surface=follow_list_page' + username
     header_hash = {
     }
     # this is probably hard-coded but we parse it anyway
@@ -276,7 +280,8 @@ class Instauser:
   def get_next_followers(self,username,app_id,sessionid,count,max_id):
     #request_url = 'https://www.instagram.com/api/v1/users/web_profile_info/?username=' + username
     #request_url = 'https://www.instagram.com/api/v1/friendships/13714580843/followers/?count=12&max_id=12&search_surface=follow_list_page'
-    request_url = 'https://www.instagram.com/api/v1/friendships/13714580843/followers/?count=12&max_id=0&search_surface=follow_list_page'
+    #request_url = 'https://www.instagram.com/api/v1/friendships/13714580843/followers/?count=12&max_id=0&search_surface=follow_list_page'
+    request_url = 'https://www.instagram.com/api/v1/friendships/13714580843/followers/?count=' + str(count) + '&max_id=' + str(max_id) + '&search_surface=follow_list_page'
     header_hash = {
     }
     # this is probably hard-coded but we parse it anyway
@@ -292,7 +297,8 @@ class Instauser:
   def get_next_following(self,username,app_id,sessionid,count,max_id):
     #request_url = 'https://www.instagram.com/api/v1/users/web_profile_info/?username=' + username
     #request_url = 'https://www.instagram.com/api/v1/friendships/13714580843/following/?count=12&max_id=12&search_surface=follow_list_page'
-    request_url = 'https://www.instagram.com/api/v1/friendships/13714580843/following/?count=12&max_id=0&search_surface=follow_list_page'
+    #request_url = 'https://www.instagram.com/api/v1/friendships/13714580843/following/?count=12&max_id=0&search_surface=follow_list_page'
+    request_url = 'https://www.instagram.com/api/v1/friendships/13714580843/following/?count=' + str(count) + '&max_id=' + str(max_id) + '&search_surface=follow_list_page'
     header_hash = {
     }
     # this is probably hard-coded but we parse it anyway
