@@ -49,3 +49,5 @@ print(myprintoutput)
 #mylist = json.loads(myprintoutput)
 mylist = myprintoutput['users']
 print(str(len(mylist)))
+
+print(my_user.id)
