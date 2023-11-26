@@ -43,7 +43,14 @@ thisoutfile.write(json.dumps(all_data_list))
 #  print(entry['display_url'])
 
 
-#print(my_user_followers_response)
+#myprintoutput = my_user_followers_response
+#myprintoutput = my_user_following_response
+#myprintoutput = my_user_followers_more_response
+myprintoutput = my_user_following_more_response
+
+#print(json.dumps(my_user_followers_response))
 #print(json.dumps(my_user_following_response))
 #print(json.dumps(my_user_followers_more_response))
-print(json.dumps(my_user_following_more_response))
+#print(json.dumps(my_user_following_more_response))
+print(myprintoutput)
+
