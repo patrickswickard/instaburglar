@@ -57,4 +57,4 @@ print(my_user.id)
 #print('NMI:' + str(next_max_id))
 
 for user in mylist:
-  print(user['username'])
+  print(user.get('username','') + ' ' + '(' + user.get('full_name','') + ')')
