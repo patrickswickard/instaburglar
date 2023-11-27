@@ -275,28 +275,32 @@ class Instauser:
     followers_list = []
     count = 100
     max_id = 0
-    next_max_id = 100
     response_hash = self.get_next_followers(username,app_id,sessionid,count,max_id)
+    nextlist = response_hash['users']
+    followers_list += nextlist
+    next_max_id = response_hash.get('next_max_id','')
     while next_max_id:
+      print('trying ' + 'next_max_id ' + str(next_max_id))
+      response_hash = self.get_next_followers(username,app_id,sessionid,count,next_max_id)
       nextlist = response_hash['users']
       followers_list += nextlist
       next_max_id = response_hash.get('next_max_id','')
-      print('trying ' + 'next_max_id ' + str(next_max_id))
-      response_hash = self.get_next_followers(username,app_id,sessionid,count,next_max_id)
     return followers_list
 
   def get_following_list_set(self,username,app_id,sessionid,count,max_id):
     following_list = []
     count = 100
     max_id = 0
-    next_max_id = 100
     response_hash = self.get_next_following(username,app_id,sessionid,count,max_id)
+    nextlist = response_hash['users']
+    following_list += nextlist
+    next_max_id = response_hash.get('next_max_id','')
     while next_max_id:
+      print('trying ' + 'next_max_id ' + str(next_max_id))
+      response_hash = self.get_next_following(username,app_id,sessionid,count,next_max_id)
       nextlist = response_hash['users']
       following_list += nextlist
       next_max_id = response_hash.get('next_max_id','')
-      print('trying ' + 'next_max_id ' + str(next_max_id))
-      response_hash = self.get_next_following(username,app_id,sessionid,count,next_max_id)
     return following_list
 
   def get_user_from_response_hash(self,response_hash):
