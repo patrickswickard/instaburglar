@@ -275,10 +275,9 @@ class Instauser:
     response_hash = json.loads(response.text)
     return response_hash
 
-  def get_followers_list_set(self,username,app_id,sessionid,count,max_id):
+  def get_followers_list_set(self,username,app_id,sessionid):
     followers_list = []
     count = 100
-#    count = 12
     max_id = 0
     response_hash = self.get_next_followers(username,app_id,sessionid,count,max_id)
     nextlist = response_hash['users']
@@ -292,10 +291,9 @@ class Instauser:
       next_max_id = response_hash.get('next_max_id','')
     return followers_list
 
-  def get_following_list_set(self,username,app_id,sessionid,count,max_id):
+  def get_following_list_set(self,username,app_id,sessionid):
     following_list = []
     count = 100
-#    count = 12
     max_id = 0
     response_hash = self.get_next_following(username,app_id,sessionid,count,max_id)
     nextlist = response_hash['users']

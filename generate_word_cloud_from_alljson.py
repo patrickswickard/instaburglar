@@ -23,10 +23,15 @@ for thispost in post_list:
       if caption_node_text:
         all_caption_list.append(caption_node_text)
 
-print(all_caption_list)
+#print(all_caption_list)
+
+for thiscaption in all_caption_list:
+  if thiscaption:
+    print(thiscaption)
+
 allstring = ' '.join(all_caption_list)
 
-print(allstring)
+#print(allstring)
 
 tokens = allstring.split()
 
