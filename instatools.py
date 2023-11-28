@@ -308,12 +308,88 @@ class Instauser:
     return following_list
 
   def get_followers_list_set(self,username,app_id,sessionid):
-    followers_list = self.get_followers_list(username,app_id,sessionid)
-    return followers_list
+    followers_set = set()
+    followers1 = self.get_followers_list(username,app_id,sessionid)
+    followers2 = self.get_followers_list(username,app_id,sessionid)
+    followers3 = self.get_followers_list(username,app_id,sessionid)
+    count1 = 0
+    count1hash = {}
+    for user in followers1:
+      count1 += 1
+      username = user.get('username','')
+      userid = user.get('pk','')
+      full_name = user.get('full_name','')
+      profile_pic_url = user.get('profile_pic_url','')
+      is_private = user.get('is_private',False)
+      if username in followers_set:
+        pass
+      else:
+        followers_set.add(username)
+    for user in followers2:
+      count1 += 1
+      username = user.get('username','')
+      userid = user.get('pk','')
+      full_name = user.get('full_name','')
+      profile_pic_url = user.get('profile_pic_url','')
+      is_private = user.get('is_private',False)
+      if username in followers_set:
+        pass
+      else:
+        followers_set.add(username)
+    for user in followers3:
+      count1 += 1
+      username = user.get('username','')
+      userid = user.get('pk','')
+      full_name = user.get('full_name','')
+      profile_pic_url = user.get('profile_pic_url','')
+      is_private = user.get('is_private',False)
+      if username in followers_set:
+        pass
+      else:
+        followers_set.add(username)
+    return followers_set
 
   def get_following_list_set(self,username,app_id,sessionid):
-    following_list = self.get_following_list(username,app_id,sessionid)
-    return following_list
+    following_set = set()
+    following1 = self.get_following_list(username,app_id,sessionid)
+    following2 = self.get_following_list(username,app_id,sessionid)
+    following3 = self.get_following_list(username,app_id,sessionid)
+    count2 = 0
+    count2hash = {}
+    for user in following1:
+      count2 += 1
+      username = user.get('username','')
+      userid = user.get('pk','')
+      full_name = user.get('full_name','')
+      profile_pic_url = user.get('profile_pic_url','')
+      is_private = user.get('is_private',False)
+      if username in following_set:
+        pass
+      else:
+        following_set.add(username)
+    for user in following2:
+      count2 += 1
+      username = user.get('username','')
+      userid = user.get('pk','')
+      full_name = user.get('full_name','')
+      profile_pic_url = user.get('profile_pic_url','')
+      is_private = user.get('is_private',False)
+      if username in following_set:
+        pass
+      else:
+        following_set.add(username)
+    for user in following3:
+      count2 += 1
+      username = user.get('username','')
+      userid = user.get('pk','')
+      full_name = user.get('full_name','')
+      profile_pic_url = user.get('profile_pic_url','')
+      is_private = user.get('is_private',False)
+      if username in following_set:
+        pass
+      else:
+        following_set.add(username)
+    return following_set
 
   def get_user_from_response_hash(self,response_hash):
     data = response_hash.get('data')
