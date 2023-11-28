@@ -1,6 +1,7 @@
 import json
 import requests
 import re
+import time
 
 class Instauser:
   def __init__(self):
@@ -244,6 +245,7 @@ class Instauser:
     return response_hash
 
   def get_next_followers(self,username,app_id,sessionid,count,max_id):
+    time.sleep(1)
     request_url = 'https://www.instagram.com/api/v1/friendships/' + str(self.id) + '/followers/?count=' + str(count) + '&max_id=' + str(max_id) + '&search_surface=follow_list_page'
     header_hash = {
     }
@@ -258,7 +260,9 @@ class Instauser:
     return response_hash
 
   def get_next_following(self,username,app_id,sessionid,count,max_id):
-    request_url = 'https://www.instagram.com/api/v1/friendships/' + str(self.id) + '/following/?count=' + str(count) + '&max_id=' + str(max_id) + '&search_surface=follow_list_page'
+    time.sleep(1)
+    #request_url = 'https://www.instagram.com/api/v1/friendships/' + str(self.id) + '/following/?count=' + str(count) + '&max_id=' + str(max_id) + '&search_surface=follow_list_page'
+    request_url = 'https://www.instagram.com/api/v1/friendships/' + str(self.id) + '/following/?count=' + str(count) + '&max_id=' + str(max_id) + ''
     header_hash = {
     }
     # this is probably hard-coded but we parse it anyway
@@ -274,6 +278,7 @@ class Instauser:
   def get_followers_list_set(self,username,app_id,sessionid,count,max_id):
     followers_list = []
     count = 100
+#    count = 12
     max_id = 0
     response_hash = self.get_next_followers(username,app_id,sessionid,count,max_id)
     nextlist = response_hash['users']
@@ -290,6 +295,7 @@ class Instauser:
   def get_following_list_set(self,username,app_id,sessionid,count,max_id):
     following_list = []
     count = 100
+#    count = 12
     max_id = 0
     response_hash = self.get_next_following(username,app_id,sessionid,count,max_id)
     nextlist = response_hash['users']
