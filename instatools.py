@@ -244,6 +244,22 @@ class Instauser:
     response_hash = json.loads(response.text)
     return response_hash
 
+  def get_first_set_tagged(self,username,app_id,sessionid):
+    request_url = 'https://www.instagram.com/graphql/query/?doc_id=17946422347485809&variables={%22id%22%3A%22' + self.id + '%22%2C%22first%22%3A12}'
+    header_hash = {
+    }
+    # this is probably hard-coded but we parse it anyway
+    # if/when this breaks try the hard-coded version
+    #header_hash['x-ig-app-id'] = '936619743392459'
+    header_hash['Cookie'] = 'sessionid=' + sessionid + '; ds_user_id=CAFE'
+    header_hash['x-ig-app-id'] = app_id
+    headers = header_hash
+    response = requests.get(request_url, headers=headers)
+    response_hash = json.loads(response.text)
+#    print('WOO')
+#    print(response_hash)
+    return response_hash
+
   def get_next_followers(self,username,app_id,sessionid,count,max_id):
     time.sleep(1)
     request_url = 'https://www.instagram.com/api/v1/friendships/' + str(self.id) + '/followers/?count=' + str(count) + '&max_id=' + str(max_id) + '&search_surface=follow_list_page'
@@ -514,11 +530,66 @@ class Instauser:
       num = '50'
     return all_data_list
 
+  def get_all_data_list_tagged(self,username,sessionid):
+    all_data_list_tagged = []
+    app_id = self.get_app_id(username)
+    response_hash = self.get_first_set_tagged(username,app_id,sessionid)
+    this_list = self.list_data_from_response_hash_tagged(response_hash)
+    all_data_list_tagged = all_data_list_tagged + this_list
+
+    # hard-coded, hopefully always the same
+    doc_id = '17991233890457762'
+#    user_id = self.get_user_id_from_response_hash(response_hash)
+    user_id = self.id
+    end_cursor = self.get_end_cursor_from_response_hash_tagged(response_hash)
+    num = '50'
+    if end_cursor:
+      print('Found end cursor ' + end_cursor)
+    else:
+      print('WTF??????????')
+    while end_cursor:
+      next_response_hash = self.get_next_response_hash_tagged(doc_id,app_id,user_id,end_cursor,num,sessionid)
+      this_list = self.list_data_from_response_hash_tagged(next_response_hash)
+      all_data_list_tagged = all_data_list_tagged + this_list
+      doc_id = '17991233890457762'
+      user_id = user_id
+      end_cursor = self.get_end_cursor_from_response_hash_tagged(next_response_hash)
+      num = '50'
+    return all_data_list_tagged
+
   def list_data_from_response_hash(self,response_hash):
     batch_list = []
     data = response_hash['data']
     user = data['user']
     edge_owner_to_timeline_media = user['edge_owner_to_timeline_media']
+    page_info = edge_owner_to_timeline_media['page_info']
+    edges = edge_owner_to_timeline_media['edges']
+    has_next_page = page_info['has_next_page']
+    end_cursor = ''
+    if has_next_page:
+      end_cursor = page_info['end_cursor']
+    for thisedge in edges:
+      node = thisedge['node']
+      post_object = Instapost()
+      post_object.process_post(node)
+      if post_object.sidecar_to_children_list:
+        for my_post_object in post_object.sidecar_to_children_list:
+          #batch_list.append(my_post_object.display_url)
+          batch_list.append(my_post_object.dumph())
+          #batch_list.append(my_post_object.dumph(self))
+      else:
+        #batch_list.append(post_object.display_url)
+        batch_list.append(post_object.dumph())
+        #batch_list.append(post_object.type())
+    return batch_list
+
+  def list_data_from_response_hash_tagged(self,response_hash):
+    print('HOOHAH')
+    print(response_hash)
+    batch_list = []
+    data = response_hash['data']
+    user = data['user']
+    edge_owner_to_timeline_media = user['edge_user_to_photos_of_you']
     page_info = edge_owner_to_timeline_media['page_info']
     edges = edge_owner_to_timeline_media['edges']
     has_next_page = page_info['has_next_page']
@@ -557,9 +628,36 @@ class Instauser:
       end_cursor = page_info['end_cursor']
     return end_cursor
 
+  def get_end_cursor_from_response_hash_tagged(self,response_hash):
+    data = response_hash['data']
+    user = data['user']
+    edge_owner_to_timeline_media = user['edge_user_to_photos_of_you']
+    page_info = edge_owner_to_timeline_media['page_info']
+    has_next_page = page_info['has_next_page']
+    end_cursor = ''
+    if has_next_page:
+      end_cursor = page_info['end_cursor']
+    return end_cursor
+
   def get_next_response_hash(self,doc_id,app_id,user_id,end_cursor,num,sessionid):
     if end_cursor:
       request_url = 'https://www.instagram.com/graphql/query/?doc_id=' + doc_id + '&variables=%7B%22id%22%3A%22' + user_id + '%22%2C%22after%22%3A%22' + end_cursor + '%22%2C%22first%22%3A' + num + '%7D'
+      header_hash = {
+      }
+      header_hash['Cookie'] = 'sessionid=' + sessionid + '; ds_user_id=CAFE'
+      header_hash['x-ig-app-id'] = app_id
+      headers = header_hash
+      response = requests.get(request_url, headers=headers)
+      response_hash = json.loads(response.text)
+      outfilename = 'NEXTSET.json'
+      thisoutfile = open(outfilename, 'w')
+      thisoutfile.write(response.text)
+      return response_hash
+
+  def get_next_response_hash_tagged(self,doc_id,app_id,user_id,end_cursor,num,sessionid):
+    if end_cursor:
+      #request_url = 'https://www.instagram.com/graphql/query/?doc_id=' + doc_id + '&variables=%7B%22id%22%3A%22' + user_id + '%22%2C%22after%22%3A%22' + end_cursor + '%22%2C%22first%22%3A' + num + '%7D'
+      request_url = 'https://www.instagram.com/graphql/query/?doc_id=' + '17946422347485809' + '&variables=%7B%22id%22%3A%22' + user_id + '%22%2C%22after%22%3A%22' + end_cursor + '%22%2C%22first%22%3A' + num + '%7D'
       header_hash = {
       }
       header_hash['Cookie'] = 'sessionid=' + sessionid + '; ds_user_id=CAFE'
