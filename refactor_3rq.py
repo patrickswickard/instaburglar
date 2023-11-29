@@ -20,9 +20,9 @@ def download_single_photo(source,filename):
     shutil.copyfileobj(url_response.raw, out_file)
 
 my_user = instatools.Instauser()
-my_user.get_user_from_web(username,sessionid)
+my_user.get_user_from_web(username)
 
-all_data_list = my_user.get_all_data_list(username, sessionid)
+all_data_list = my_user.get_all_data_list(username)
 
 print(json.dumps(all_data_list))
 outfilename = 'all_data_list.json'

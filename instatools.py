@@ -2,6 +2,7 @@ import json
 import requests
 import re
 import time
+import mysecret
 
 class Instauser:
   def __init__(self):
@@ -65,6 +66,8 @@ class Instauser:
     self.username = ''
     self.connected_fb_page = ''
     self.pronouns = []
+    # special
+    self.sessionid = self.get_sessionid()
 
   def dumph(self):
     thishash = {}
@@ -201,6 +204,11 @@ class Instauser:
     self.connected_fb_page = thishash['connected_fb_page']
     self.pronouns = thishash['pronouns']
 
+  def get_sessionid(self):
+    secret = mysecret.Mysecret()
+    sessionid = secret.sid
+    return sessionid
+
   # method to get app id parameter which is probably static but maybe not?
   # in any case it is parsable at least for now
   # if this breaks try hard-coding it
@@ -230,28 +238,28 @@ class Instauser:
           app_id = app_id_hits[0]
           return app_id
 
-  def get_first_set(self,username,app_id,sessionid):
+  def get_first_set(self,username,app_id):
     request_url = 'https://www.instagram.com/api/v1/users/web_profile_info/?username=' + username
     header_hash = {
     }
     # this is probably hard-coded but we parse it anyway
     # if/when this breaks try the hard-coded version
     #header_hash['x-ig-app-id'] = '936619743392459'
-    header_hash['Cookie'] = 'sessionid=' + sessionid + '; ds_user_id=CAFE'
+    header_hash['Cookie'] = 'sessionid=' + self.sessionid + '; ds_user_id=CAFE'
     header_hash['x-ig-app-id'] = app_id
     headers = header_hash
     response = requests.get(request_url, headers=headers)
     response_hash = json.loads(response.text)
     return response_hash
 
-  def get_first_set_tagged(self,username,app_id,sessionid):
+  def get_first_set_tagged(self,username,app_id):
     request_url = 'https://www.instagram.com/graphql/query/?doc_id=17946422347485809&variables={%22id%22%3A%22' + self.id + '%22%2C%22first%22%3A12}'
     header_hash = {
     }
     # this is probably hard-coded but we parse it anyway
     # if/when this breaks try the hard-coded version
     #header_hash['x-ig-app-id'] = '936619743392459'
-    header_hash['Cookie'] = 'sessionid=' + sessionid + '; ds_user_id=CAFE'
+    header_hash['Cookie'] = 'sessionid=' + self.sessionid + '; ds_user_id=CAFE'
     header_hash['x-ig-app-id'] = app_id
     headers = header_hash
     response = requests.get(request_url, headers=headers)
@@ -260,7 +268,7 @@ class Instauser:
 #    print(response_hash)
     return response_hash
 
-  def get_next_followers(self,username,app_id,sessionid,count,max_id):
+  def get_next_followers(self,username,app_id,count,max_id):
     time.sleep(1)
     request_url = 'https://www.instagram.com/api/v1/friendships/' + str(self.id) + '/followers/?count=' + str(count) + '&max_id=' + str(max_id) + '&search_surface=follow_list_page'
     header_hash = {
@@ -268,14 +276,14 @@ class Instauser:
     # this is probably hard-coded but we parse it anyway
     # if/when this breaks try the hard-coded version
     #header_hash['x-ig-app-id'] = '936619743392459'
-    header_hash['Cookie'] = 'sessionid=' + sessionid + '; ds_user_id=CAFE'
+    header_hash['Cookie'] = 'sessionid=' + self.sessionid + '; ds_user_id=CAFE'
     header_hash['x-ig-app-id'] = app_id
     headers = header_hash
     response = requests.get(request_url, headers=headers)
     response_hash = json.loads(response.text)
     return response_hash
 
-  def get_next_following(self,username,app_id,sessionid,count,max_id):
+  def get_next_following(self,username,app_id,count,max_id):
     time.sleep(1)
     #request_url = 'https://www.instagram.com/api/v1/friendships/' + str(self.id) + '/following/?count=' + str(count) + '&max_id=' + str(max_id) + '&search_surface=follow_list_page'
     request_url = 'https://www.instagram.com/api/v1/friendships/' + str(self.id) + '/following/?count=' + str(count) + '&max_id=' + str(max_id) + ''
@@ -284,50 +292,50 @@ class Instauser:
     # this is probably hard-coded but we parse it anyway
     # if/when this breaks try the hard-coded version
     #header_hash['x-ig-app-id'] = '936619743392459'
-    header_hash['Cookie'] = 'sessionid=' + sessionid + '; ds_user_id=CAFE'
+    header_hash['Cookie'] = 'sessionid=' + self.sessionid + '; ds_user_id=CAFE'
     header_hash['x-ig-app-id'] = app_id
     headers = header_hash
     response = requests.get(request_url, headers=headers)
     response_hash = json.loads(response.text)
     return response_hash
 
-  def get_followers_list(self,username,app_id,sessionid):
+  def get_followers_list(self,username,app_id):
     followers_list = []
     count = 100
     max_id = 0
-    response_hash = self.get_next_followers(username,app_id,sessionid,count,max_id)
+    response_hash = self.get_next_followers(username,app_id,count,max_id)
     nextlist = response_hash['users']
     followers_list += nextlist
     next_max_id = response_hash.get('next_max_id','')
     while next_max_id:
       print('trying ' + 'next_max_id ' + str(next_max_id))
-      response_hash = self.get_next_followers(username,app_id,sessionid,count,next_max_id)
+      response_hash = self.get_next_followers(username,app_id,count,next_max_id)
       nextlist = response_hash['users']
       followers_list += nextlist
       next_max_id = response_hash.get('next_max_id','')
     return followers_list
 
-  def get_following_list(self,username,app_id,sessionid):
+  def get_following_list(self,username,app_id):
     following_list = []
     count = 100
     max_id = 0
-    response_hash = self.get_next_following(username,app_id,sessionid,count,max_id)
+    response_hash = self.get_next_following(username,app_id,count,max_id)
     nextlist = response_hash['users']
     following_list += nextlist
     next_max_id = response_hash.get('next_max_id','')
     while next_max_id:
       print('trying ' + 'next_max_id ' + str(next_max_id))
-      response_hash = self.get_next_following(username,app_id,sessionid,count,next_max_id)
+      response_hash = self.get_next_following(username,app_id,count,next_max_id)
       nextlist = response_hash['users']
       following_list += nextlist
       next_max_id = response_hash.get('next_max_id','')
     return following_list
 
-  def get_followers_list_set(self,username,app_id,sessionid):
+  def get_followers_list_set(self,username,app_id):
     followers_set = set()
-    followers1 = self.get_followers_list(username,app_id,sessionid)
-    followers2 = self.get_followers_list(username,app_id,sessionid)
-    followers3 = self.get_followers_list(username,app_id,sessionid)
+    followers1 = self.get_followers_list(username,app_id)
+    followers2 = self.get_followers_list(username,app_id)
+    followers3 = self.get_followers_list(username,app_id)
     count1 = 0
     count1hash = {}
     for user in followers1:
@@ -365,11 +373,11 @@ class Instauser:
         followers_set.add(username)
     return followers_set
 
-  def get_following_list_set(self,username,app_id,sessionid):
+  def get_following_list_set(self,username,app_id):
     following_set = set()
-    following1 = self.get_following_list(username,app_id,sessionid)
-    following2 = self.get_following_list(username,app_id,sessionid)
-    following3 = self.get_following_list(username,app_id,sessionid)
+    following1 = self.get_following_list(username,app_id)
+    following2 = self.get_following_list(username,app_id)
+    following3 = self.get_following_list(username,app_id)
     count2 = 0
     count2hash = {}
     for user in following1:
@@ -502,15 +510,15 @@ class Instauser:
         self.connected_fb_page = thisuser.get('connected_fb_page','')
         self.pronouns = thisuser.get('pronouns',[])
 
-  def get_user_from_web(self,username,sessionid):
+  def get_user_from_web(self,username):
     app_id = self.get_app_id(username)
-    response_hash = self.get_first_set(username,app_id,sessionid)
+    response_hash = self.get_first_set(username,app_id)
     self.get_user_from_response_hash(response_hash)
 
-  def get_all_data_list(self,username,sessionid):
+  def get_all_data_list(self,username):
     all_data_list = []
     app_id = self.get_app_id(username)
-    response_hash = self.get_first_set(username,app_id,sessionid)
+    response_hash = self.get_first_set(username,app_id)
     this_list = self.list_data_from_response_hash(response_hash)
     all_data_list = all_data_list + this_list
 
@@ -521,7 +529,7 @@ class Instauser:
     num = '50'
 
     while end_cursor:
-      next_response_hash = self.get_next_response_hash(doc_id,app_id,user_id,end_cursor,num,sessionid)
+      next_response_hash = self.get_next_response_hash(doc_id,app_id,user_id,end_cursor,num)
       this_list = self.list_data_from_response_hash(next_response_hash)
       all_data_list = all_data_list + this_list
       doc_id = '17991233890457762'
@@ -530,10 +538,10 @@ class Instauser:
       num = '50'
     return all_data_list
 
-  def get_all_data_list_tagged(self,username,sessionid):
+  def get_all_data_list_tagged(self,username):
     all_data_list_tagged = []
     app_id = self.get_app_id(username)
-    response_hash = self.get_first_set_tagged(username,app_id,sessionid)
+    response_hash = self.get_first_set_tagged(username,app_id)
     this_list = self.list_data_from_response_hash_tagged(response_hash)
     all_data_list_tagged = all_data_list_tagged + this_list
 
@@ -548,7 +556,7 @@ class Instauser:
     else:
       print('WTF??????????')
     while end_cursor:
-      next_response_hash = self.get_next_response_hash_tagged(doc_id,app_id,user_id,end_cursor,num,sessionid)
+      next_response_hash = self.get_next_response_hash_tagged(doc_id,app_id,user_id,end_cursor,num)
       this_list = self.list_data_from_response_hash_tagged(next_response_hash)
       all_data_list_tagged = all_data_list_tagged + this_list
       doc_id = '17991233890457762'
@@ -639,12 +647,12 @@ class Instauser:
       end_cursor = page_info['end_cursor']
     return end_cursor
 
-  def get_next_response_hash(self,doc_id,app_id,user_id,end_cursor,num,sessionid):
+  def get_next_response_hash(self,doc_id,app_id,user_id,end_cursor,num):
     if end_cursor:
       request_url = 'https://www.instagram.com/graphql/query/?doc_id=' + doc_id + '&variables=%7B%22id%22%3A%22' + user_id + '%22%2C%22after%22%3A%22' + end_cursor + '%22%2C%22first%22%3A' + num + '%7D'
       header_hash = {
       }
-      header_hash['Cookie'] = 'sessionid=' + sessionid + '; ds_user_id=CAFE'
+      header_hash['Cookie'] = 'sessionid=' + self.sessionid + '; ds_user_id=CAFE'
       header_hash['x-ig-app-id'] = app_id
       headers = header_hash
       response = requests.get(request_url, headers=headers)
@@ -654,13 +662,13 @@ class Instauser:
       thisoutfile.write(response.text)
       return response_hash
 
-  def get_next_response_hash_tagged(self,doc_id,app_id,user_id,end_cursor,num,sessionid):
+  def get_next_response_hash_tagged(self,doc_id,app_id,user_id,end_cursor,num):
     if end_cursor:
       #request_url = 'https://www.instagram.com/graphql/query/?doc_id=' + doc_id + '&variables=%7B%22id%22%3A%22' + user_id + '%22%2C%22after%22%3A%22' + end_cursor + '%22%2C%22first%22%3A' + num + '%7D'
       request_url = 'https://www.instagram.com/graphql/query/?doc_id=' + '17946422347485809' + '&variables=%7B%22id%22%3A%22' + user_id + '%22%2C%22after%22%3A%22' + end_cursor + '%22%2C%22first%22%3A' + num + '%7D'
       header_hash = {
       }
-      header_hash['Cookie'] = 'sessionid=' + sessionid + '; ds_user_id=CAFE'
+      header_hash['Cookie'] = 'sessionid=' + self.sessionid + '; ds_user_id=CAFE'
       header_hash['x-ig-app-id'] = app_id
       headers = header_hash
       response = requests.get(request_url, headers=headers)
@@ -725,6 +733,13 @@ class Instapost:
 ##############################################################################
     self.location = ''
     self.sidecar_to_children_list = []
+    # special
+    self.sessionid = self.get_sessionid()
+
+  def get_sessionid(self):
+    secret = mysecret.Mysecret()
+    sessionid = secret.sid
+    return sessionid
 
   def get_common_values(self,thisnode):
     self.id = thisnode.get('id','')

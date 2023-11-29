@@ -11,6 +11,6 @@ secret = mysecret.Mysecret()
 sessionid = secret.sid
 
 my_user = instatools.Instauser()
-my_user.get_user_from_web(username,sessionid)
+my_user.get_user_from_web(username)
 
 print(my_user.dumps())
