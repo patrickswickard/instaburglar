@@ -31,8 +31,6 @@ for thiscaption in all_caption_list:
 
 allstring = ' '.join(all_caption_list)
 
-#print(allstring)
-
 tokens = allstring.split()
 
 for i in range(len(tokens)):
