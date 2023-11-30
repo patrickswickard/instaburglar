@@ -1,15 +1,10 @@
-import requests
-import re
-import json
-import shutil
-import mysecret
-import time
 import instatools
+import json
 
 username = 'drought_season'
 
-secret = mysecret.Mysecret()
-sessionid = secret.sid
+#secret = mysecret.Mysecret()
+#sessionid = secret.sid
 
 my_user = instatools.Instauser()
 my_user.get_user_from_web(username)
