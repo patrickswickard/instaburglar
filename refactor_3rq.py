@@ -1,23 +1,7 @@
-import requests
-import re
-import json
-import shutil
-import mysecret
-import time
 import instatools
+import json
 
 username = 'drought_season'
-
-secret = mysecret.Mysecret()
-sessionid = secret.sid
-
-# method to download a single photo, takes url as source and dl target as filename
-def download_single_photo(source,filename):
-  source = source
-  photo_filename = filename
-  url_response = requests.get(source, stream=True)
-  with open(photo_filename, 'wb') as out_file:
-    shutil.copyfileobj(url_response.raw, out_file)
 
 my_user = instatools.Instauser()
 my_user.get_user_from_web(username)
