@@ -13,9 +13,8 @@ sessionid = secret.sid
 
 my_user = instatools.Instauser()
 my_user.get_user_from_web(username)
-my_user_appid = my_user.get_app_id(username)
-my_user_followers_set = my_user.get_followers_list_set(username,my_user_appid)
-my_user_following_set = my_user.get_following_list_set(username,my_user_appid)
+my_user_followers_set = my_user.get_followers_list_set(username)
+my_user_following_set = my_user.get_following_list_set(username)
 
 print('mutuals:')
 my_user_mutuals = my_user_followers_set.intersection(my_user_following_set)
