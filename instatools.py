@@ -664,11 +664,13 @@ class Instapost:
     self.app_id = '936619743392459' # hopefully this is hard-coded, leaving unused method just in case
 
   def get_sessionid(self):
+    """Utility method to get the session id from mysecret.py"""
     secret = mysecret.Mysecret()
     sessionid = secret.sid
     return sessionid
 
   def get_common_values(self,thisnode):
+    """Utility method to get values that may vary over various images attached to a particular Instagram post"""
     self.id = thisnode.get('id','')
     self.shortcode = thisnode.get('shortcode','')
     #subfields
@@ -702,6 +704,7 @@ class Instapost:
     self.accessibility_caption = thisnode.get('accessibility_caption','')
 
   def process_post(self,thisnode):
+    """Process all metadata from a particular node/post"""
     self.get_common_values(thisnode)
     # after this point everything is attached only to the main post
     caption = ''
@@ -744,6 +747,7 @@ class Instapost:
     self.sidecar_to_children_list = my_sidecar_to_children_list
 
   def dumph(self):
+    """Method to convert post attributes to a hash"""
     posthash = {}
     posthash['id'] = self.id
     posthash['shortcode'] = self.shortcode
@@ -779,15 +783,18 @@ class Instapost:
     return posthash
 
   def dumps(self):
+    """Method to convert post attributes to a json string for easy storage"""
     thishash = self.dumph()
     return json.dumps(thishash)
 
   def reads(self,json):
+    """Method to read in post attributes from a json string and create a post object"""
     thishash = json.reads(json)
     postobject = self.Instapost()
     return postobject
 
   def readh(self,posthash):
+    """Method to read in post attributes from a json string and create a hash corresponding to those"""
     self.id = posthash['id']
     self.shortcode = posthash['shortcode']
     self.width = posthash['width']
