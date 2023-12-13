@@ -491,17 +491,14 @@ class Instauser:
     # hard-coded, hopefully always the same
     doc_id = '17991233890457762'
     user_id = self.get_user_id_from_response_hash(response_hash)
-    end_cursor = self.get_end_cursor_from_response_hash(response_hash)
     num = '50'
+    end_cursor = self.get_end_cursor_from_response_hash(response_hash)
 
     while end_cursor:
       next_response_hash = self.get_next_response_hash(doc_id,user_id,end_cursor,num)
       this_list = self.list_data_from_response_hash(next_response_hash)
       all_data_list = all_data_list + this_list
-      doc_id = '17991233890457762'
-      user_id = user_id
       end_cursor = self.get_end_cursor_from_response_hash(next_response_hash)
-      num = '50'
     return all_data_list
 
   def get_all_data_list_tagged(self,username):
@@ -514,16 +511,13 @@ class Instauser:
     # hard-coded, hopefully always the same
     doc_id = '17991233890457762'
     user_id = self.id
-    end_cursor = self.get_end_cursor_from_response_hash_tagged(response_hash)
     num = '50'
+    end_cursor = self.get_end_cursor_from_response_hash_tagged(response_hash)
     while end_cursor:
       next_response_hash = self.get_next_response_hash_tagged(doc_id,user_id,end_cursor,num)
       this_list = self.list_data_from_response_hash_tagged(next_response_hash)
       all_data_list_tagged = all_data_list_tagged + this_list
-      doc_id = '17991233890457762'
-      user_id = user_id
       end_cursor = self.get_end_cursor_from_response_hash_tagged(next_response_hash)
-      num = '50'
     return all_data_list_tagged
 
   def list_data_from_response_hash(self,response_hash):
@@ -635,28 +629,6 @@ class Instauser:
       thisoutfile = open(outfilename, 'w')
       thisoutfile.write(response.text)
       return response_hash
-
-#  def list_data_from_response_hash(self,response_hash):
-#    batch_list = []
-#    data = response_hash['data']
-#    user = data['user']
-#    edge_owner_to_timeline_media = user['edge_owner_to_timeline_media']
-#    page_info = edge_owner_to_timeline_media['page_info']
-#    edges = edge_owner_to_timeline_media['edges']
-#    has_next_page = page_info['has_next_page']
-#    end_cursor = ''
-#    if has_next_page:
-#      end_cursor = page_info['end_cursor']
-#    for thisedge in edges:
-#      node = thisedge['node']
-#      post_object = Instapost()
-#      post_object.process_post(node)
-#      if post_object.sidecar_to_children_list:
-#        for my_post_object in post_object.sidecar_to_children_list:
-#          batch_list.append(my_post_object.dumph())
-#      else:
-#        batch_list.append(post_object.dumph())
-#    return batch_list
 
 class Instapost:
   """Creates an object corresponding to a particular Instagram post"""
