@@ -5,6 +5,7 @@ import time
 import mysecret
 
 class Instauser:
+  """Creates a new object corresponding to a particular Instagram user"""
   def __init__(self):
     self.ai_agent_type = ''
     self.biography = ''
@@ -71,6 +72,7 @@ class Instauser:
     self.app_id = '936619743392459' # hopefully this is hard-coded, leaving unused method just in case
 
   def dumph(self):
+    """Method which creates a hash from an Instagram user's current attributes"""
     thishash = {}
     thishash['ai_agent_type'] = self.ai_agent_type
     thishash['biography'] = self.biography
@@ -135,15 +137,18 @@ class Instauser:
     return thishash
 
   def dumps(self):
+    """Method which creates a json string from a hash based on Instagram user's current attributes"""
     thishash = self.dumph()
     return json.dumps(thishash)
 
   def reads(self,json):
+    """Method which reads in an Instagram user's attributes from a json string in same format created by Instauser.dumps"""
     thishash = json.reads(json)
     postobject = self.Instauser()
     return postobject
 
   def readh(self,thishash):
+    """Method which reads in an Instagram user's attributes from a hash in same format created by Instauser.dumph"""
     self.ai_agent_type = thishash['ai_agent_type']
     self.biography = thishash['biography']
     self.bio_links = thishash['bio_links']
@@ -206,6 +211,7 @@ class Instauser:
     self.pronouns = thishash['pronouns']
 
   def get_sessionid(self):
+    """Method that reads in a sessionid from mysecret.py .  This could be handled smoother."""
     secret = mysecret.Mysecret()
     sessionid = secret.sid
     return sessionid
@@ -214,6 +220,7 @@ class Instauser:
   # in any case it is parsable at least for now
   # if this breaks try hard-coding it
   def get_app_id(self,username):
+    """One-off method to read and report the hopefully static app id from Instagram website, this is generally hard-coded elsewhere."""
     debug = False
     request_url = 'https://www.instagram.com/' + username + '/'
     headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/118.0'}
@@ -241,6 +248,7 @@ class Instauser:
 
   # this method gets the first set of a user's posts
   def get_first_set(self,username):
+    """Method to get the first set of a user's posts"""
     request_url = 'https://www.instagram.com/api/v1/users/web_profile_info/?username=' + username
     header_hash = {
     }
@@ -254,7 +262,9 @@ class Instauser:
   # this method gets the first set of posts a user is tagged in
   # note the weird hard-coded doc_id which I am unsure about...
   def get_first_set_tagged(self,username):
-    request_url = 'https://www.instagram.com/graphql/query/?doc_id=17946422347485809&variables={%22id%22%3A%22' + self.id + '%22%2C%22first%22%3A12}'
+    """Method to get the first set of posts a user is tagged in"""
+    doc_id = '17946422347485809'
+    request_url = 'https://www.instagram.com/graphql/query/?doc_id=' + doc_id + '&variables={%22id%22%3A%22' + self.id + '%22%2C%22first%22%3A12}'
     header_hash = {
     }
     header_hash['Cookie'] = 'sessionid=' + self.sessionid + '; ds_user_id=CAFE'
@@ -265,6 +275,7 @@ class Instauser:
     return response_hash
 
   def get_next_followers(self,username,count,max_id):
+    """Method to get followers of a user beyond the first set"""
     time.sleep(1)
     request_url = 'https://www.instagram.com/api/v1/friendships/' + str(self.id) + '/followers/?count=' + str(count) + '&max_id=' + str(max_id) + '&search_surface=follow_list_page'
     header_hash = {
@@ -277,6 +288,7 @@ class Instauser:
     return response_hash
 
   def get_next_following(self,username,count,max_id):
+    """Method to get Instagram users a user is following beyond the first set"""
     time.sleep(1)
     request_url = 'https://www.instagram.com/api/v1/friendships/' + str(self.id) + '/following/?count=' + str(count) + '&max_id=' + str(max_id) + ''
     header_hash = {
@@ -289,6 +301,7 @@ class Instauser:
     return response_hash
 
   def get_followers_list(self,username):
+    """Method to get a list of Instagram users who follow a particular user"""
     followers_list = []
     count = 100
     max_id = 0
@@ -305,6 +318,7 @@ class Instauser:
     return followers_list
 
   def get_following_list(self,username):
+    """Method to get a list of Instagram users who are followed by a particular user"""
     following_list = []
     count = 100
     max_id = 0
@@ -321,6 +335,7 @@ class Instauser:
     return following_list
 
   def get_followers_list_set(self,username):
+    """Method to get a set of Instagram users who follow a particular user.  Because of Instagram's flakiness, it retrieves the list of followers three times and aggregates results.  Note this can take some time to complete."""
     followers_set = set()
     followers_lists = []
     for i in range(3):
@@ -343,6 +358,7 @@ class Instauser:
     return followers_set
 
   def get_following_list_set(self,username):
+    """Method to get a set of Instagram users who are followed by a particular user.  Because of Instagram's flakiness, it retrieves the list of followers three times and aggregates results.  Note this can take some time to complete."""
     following_set = set()
     following_lists = []
     for i in range(3):
@@ -365,6 +381,7 @@ class Instauser:
     return following_set
 
   def get_user_from_response_hash(self,response_hash):
+    """Method to parse user information from the response hash from an http query to instagram about that user."""
     data = response_hash.get('data')
     if data:
       thisuser = data.get('user')
@@ -460,10 +477,12 @@ class Instauser:
         self.pronouns = thisuser.get('pronouns',[])
 
   def get_user_from_web(self,username):
+    """Method to perform an http query for an Instagram user and return an Instauser object for that user."""
     response_hash = self.get_first_set(username)
     self.get_user_from_response_hash(response_hash)
 
   def get_all_data_list(self,username):
+    """Method to retrieve all available posts by a particular Instagram user."""
     all_data_list = []
     response_hash = self.get_first_set(username)
     this_list = self.list_data_from_response_hash(response_hash)
@@ -486,6 +505,7 @@ class Instauser:
     return all_data_list
 
   def get_all_data_list_tagged(self,username):
+    """Method to retrieve all available posts in which a particular Instagram user is tagged."""
     all_data_list_tagged = []
     response_hash = self.get_first_set_tagged(username)
     this_list = self.list_data_from_response_hash_tagged(response_hash)
@@ -507,6 +527,7 @@ class Instauser:
     return all_data_list_tagged
 
   def list_data_from_response_hash(self,response_hash):
+    """Utility method to parse all post data from a query listing a user's posts."""
     batch_list = []
     data = response_hash['data']
     user = data['user']
@@ -529,6 +550,7 @@ class Instauser:
     return batch_list
 
   def list_data_from_response_hash_tagged(self,response_hash):
+    """Utility method to parse all post data from a query listing the posts a user is tagged in."""
     batch_list = []
     data = response_hash['data']
     user = data['user']
@@ -551,12 +573,14 @@ class Instauser:
     return batch_list
 
   def get_user_id_from_response_hash(self,response_hash):
+    """Utility method to parse a user's user_id from a response hash."""
     data = response_hash['data']
     user = data['user']
     user_id = user['id']
     return user_id
 
   def get_end_cursor_from_response_hash(self,response_hash):
+    """Utility method to parse the end cursor from a response hash to get to next page of results of a user's posts."""
     data = response_hash['data']
     user = data['user']
     edge_owner_to_timeline_media = user['edge_owner_to_timeline_media']
@@ -568,6 +592,7 @@ class Instauser:
     return end_cursor
 
   def get_end_cursor_from_response_hash_tagged(self,response_hash):
+    """Utility method to parse the end cursor from a response hash to get to next page of results a user is tagged in."""
     data = response_hash['data']
     user = data['user']
     edge_owner_to_timeline_media = user['edge_user_to_photos_of_you']
@@ -579,6 +604,7 @@ class Instauser:
     return end_cursor
 
   def get_next_response_hash(self,doc_id,user_id,end_cursor,num):
+    """Utility method to fetch next page of results of a user's posts."""
     if end_cursor:
       request_url = 'https://www.instagram.com/graphql/query/?doc_id=' + doc_id + '&variables=%7B%22id%22%3A%22' + user_id + '%22%2C%22after%22%3A%22' + end_cursor + '%22%2C%22first%22%3A' + num + '%7D'
       header_hash = {
@@ -594,6 +620,7 @@ class Instauser:
       return response_hash
 
   def get_next_response_hash_tagged(self,doc_id,user_id,end_cursor,num):
+    """Utility method to fetch next page of results of posts a user is tagged in."""
     if end_cursor:
       #request_url = 'https://www.instagram.com/graphql/query/?doc_id=' + doc_id + '&variables=%7B%22id%22%3A%22' + user_id + '%22%2C%22after%22%3A%22' + end_cursor + '%22%2C%22first%22%3A' + num + '%7D'
       request_url = 'https://www.instagram.com/graphql/query/?doc_id=' + '17946422347485809' + '&variables=%7B%22id%22%3A%22' + user_id + '%22%2C%22after%22%3A%22' + end_cursor + '%22%2C%22first%22%3A' + num + '%7D'
@@ -609,29 +636,30 @@ class Instauser:
       thisoutfile.write(response.text)
       return response_hash
 
-  def list_data_from_response_hash(self,response_hash):
-    batch_list = []
-    data = response_hash['data']
-    user = data['user']
-    edge_owner_to_timeline_media = user['edge_owner_to_timeline_media']
-    page_info = edge_owner_to_timeline_media['page_info']
-    edges = edge_owner_to_timeline_media['edges']
-    has_next_page = page_info['has_next_page']
-    end_cursor = ''
-    if has_next_page:
-      end_cursor = page_info['end_cursor']
-    for thisedge in edges:
-      node = thisedge['node']
-      post_object = Instapost()
-      post_object.process_post(node)
-      if post_object.sidecar_to_children_list:
-        for my_post_object in post_object.sidecar_to_children_list:
-          batch_list.append(my_post_object.dumph())
-      else:
-        batch_list.append(post_object.dumph())
-    return batch_list
+#  def list_data_from_response_hash(self,response_hash):
+#    batch_list = []
+#    data = response_hash['data']
+#    user = data['user']
+#    edge_owner_to_timeline_media = user['edge_owner_to_timeline_media']
+#    page_info = edge_owner_to_timeline_media['page_info']
+#    edges = edge_owner_to_timeline_media['edges']
+#    has_next_page = page_info['has_next_page']
+#    end_cursor = ''
+#    if has_next_page:
+#      end_cursor = page_info['end_cursor']
+#    for thisedge in edges:
+#      node = thisedge['node']
+#      post_object = Instapost()
+#      post_object.process_post(node)
+#      if post_object.sidecar_to_children_list:
+#        for my_post_object in post_object.sidecar_to_children_list:
+#          batch_list.append(my_post_object.dumph())
+#      else:
+#        batch_list.append(post_object.dumph())
+#    return batch_list
 
 class Instapost:
+  """Creates an object corresponding to a particular Instagram post"""
   def __init__(self):
     self.id = ''
     self.shortcode = ''
