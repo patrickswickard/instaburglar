@@ -509,7 +509,7 @@ class Instauser:
     all_data_list_tagged = all_data_list_tagged + this_list
 
     # hard-coded, hopefully always the same
-    doc_id = '17991233890457762'
+    doc_id = '17946422347485809'
     user_id = self.id
     num = '50'
     end_cursor = self.get_end_cursor_from_response_hash_tagged(response_hash)
@@ -616,8 +616,7 @@ class Instauser:
   def get_next_response_hash_tagged(self,doc_id,user_id,end_cursor,num):
     """Utility method to fetch next page of results of posts a user is tagged in."""
     if end_cursor:
-      #request_url = 'https://www.instagram.com/graphql/query/?doc_id=' + doc_id + '&variables=%7B%22id%22%3A%22' + user_id + '%22%2C%22after%22%3A%22' + end_cursor + '%22%2C%22first%22%3A' + num + '%7D'
-      request_url = 'https://www.instagram.com/graphql/query/?doc_id=' + '17946422347485809' + '&variables=%7B%22id%22%3A%22' + user_id + '%22%2C%22after%22%3A%22' + end_cursor + '%22%2C%22first%22%3A' + num + '%7D'
+      request_url = 'https://www.instagram.com/graphql/query/?doc_id=' + doc_id + '&variables=%7B%22id%22%3A%22' + user_id + '%22%2C%22after%22%3A%22' + end_cursor + '%22%2C%22first%22%3A' + num + '%7D'
       header_hash = {
       }
       header_hash['Cookie'] = 'sessionid=' + self.sessionid + '; ds_user_id=CAFE'
