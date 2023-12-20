@@ -224,14 +224,16 @@ class Instauser:
     debug = False
     if not debug:
       proxies = {}
+      verify = True
     else:
       proxies = {
         'http' : 'http://localhost:8888',
         'https' : 'http://localhost:8888',
       }
+      verify = False
     request_url = 'https://www.instagram.com/' + username + '/'
     headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/118.0'}
-    response = requests.get(request_url, headers=headers, proxies=proxies, verify=False)
+    response = requests.get(request_url, headers=headers, proxies=proxies, verify=verify)
     raw_html = response.text
     responselines = response.text.splitlines()
     for thisline in responselines:
@@ -252,18 +254,20 @@ class Instauser:
     debug = False
     if not debug:
       proxies = {}
+      verify = True
     else:
       proxies = {
         'http' : 'http://localhost:8888',
         'https' : 'http://localhost:8888',
       }
+      verify = False
     request_url = 'https://www.instagram.com/api/v1/users/web_profile_info/?username=' + username
     header_hash = {
     }
     header_hash['Cookie'] = 'sessionid=' + self.sessionid + '; ds_user_id=CAFE'
     header_hash['x-ig-app-id'] = self.app_id
     headers = header_hash
-    response = requests.get(request_url, headers=headers, proxies=proxies, verify=False)
+    response = requests.get(request_url, headers=headers, proxies=proxies, verify=verify)
     response_hash = json.loads(response.text)
     return response_hash
 
@@ -275,18 +279,20 @@ class Instauser:
     debug = False
     if not debug:
       proxies = {}
+      verify = True
     else:
       proxies = {
         'http' : 'http://localhost:8888',
         'https' : 'http://localhost:8888',
       }
+      verify = False
     request_url = 'https://www.instagram.com/graphql/query/?doc_id=' + doc_id + '&variables={%22id%22%3A%22' + self.id + '%22%2C%22first%22%3A12}'
     header_hash = {
     }
     header_hash['Cookie'] = 'sessionid=' + self.sessionid + '; ds_user_id=CAFE'
     header_hash['x-ig-app-id'] = self.app_id
     headers = header_hash
-    response = requests.get(request_url, headers=headers, proxies=proxies, verify=False)
+    response = requests.get(request_url, headers=headers, proxies=proxies, verify=verify)
     response_hash = json.loads(response.text)
     return response_hash
 
@@ -296,18 +302,20 @@ class Instauser:
     debug = False
     if not debug:
       proxies = {}
+      verify = True
     else:
       proxies = {
         'http' : 'http://localhost:8888',
         'https' : 'http://localhost:8888',
       }
+      verify = False
     request_url = 'https://www.instagram.com/api/v1/friendships/' + str(self.id) + '/followers/?count=' + str(count) + '&max_id=' + str(max_id) + '&search_surface=follow_list_page'
     header_hash = {
     }
     header_hash['Cookie'] = 'sessionid=' + self.sessionid + '; ds_user_id=CAFE'
     header_hash['x-ig-app-id'] = self.app_id
     headers = header_hash
-    response = requests.get(request_url, headers=headers, proxies=proxies, verify=False)
+    response = requests.get(request_url, headers=headers, proxies=proxies, verify=verify)
     response_hash = json.loads(response.text)
     return response_hash
 
@@ -317,18 +325,20 @@ class Instauser:
     debug = False
     if not debug:
       proxies = {}
+      verify = True
     else:
       proxies = {
         'http' : 'http://localhost:8888',
         'https' : 'http://localhost:8888',
       }
+      verify = False
     request_url = 'https://www.instagram.com/api/v1/friendships/' + str(self.id) + '/following/?count=' + str(count) + '&max_id=' + str(max_id) + ''
     header_hash = {
     }
     header_hash['Cookie'] = 'sessionid=' + self.sessionid + '; ds_user_id=CAFE'
     header_hash['x-ig-app-id'] = self.app_id
     headers = header_hash
-    response = requests.get(request_url, headers=headers, proxies=proxies, verify=False)
+    response = requests.get(request_url, headers=headers, proxies=proxies, verify=verify)
     response_hash = json.loads(response.text)
     return response_hash
 
@@ -659,18 +669,20 @@ class Instauser:
     debug = False
     if not debug:
       proxies = {}
+      verify = True
     else:
       proxies = {
         'http' : 'http://localhost:8888',
         'https' : 'http://localhost:8888',
       }
+      verify = False
     request_url = 'https://www.instagram.com/graphql/query/?doc_id=' + doc_id + '&variables=%7B%22id%22%3A%22' + user_id + '%22%2C%22after%22%3A%22' + end_cursor + '%22%2C%22first%22%3A' + num + '%7D'
     header_hash = {
     }
     header_hash['Cookie'] = 'sessionid=' + self.sessionid + '; ds_user_id=CAFE'
     header_hash['x-ig-app-id'] = self.app_id
     headers = header_hash
-    response = requests.get(request_url, headers=headers, proxies=proxies, verify=False)
+    response = requests.get(request_url, headers=headers, proxies=proxies, verify=verify)
     response_hash = json.loads(response.text)
     outfilename = 'NEXTSET.json'
     thisoutfile = open(outfilename, 'w')
@@ -683,18 +695,20 @@ class Instauser:
     debug = False
     if not debug:
       proxies = {}
+      verify = True
     else:
       proxies = {
         'http' : 'http://localhost:8888',
         'https' : 'http://localhost:8888',
       }
+      verify = False
     request_url = 'https://www.instagram.com/graphql/query/?doc_id=' + doc_id + '&variables=%7B%22id%22%3A%22' + user_id + '%22%2C%22after%22%3A%22' + end_cursor + '%22%2C%22first%22%3A' + num + '%7D'
     header_hash = {
     }
     header_hash['Cookie'] = 'sessionid=' + self.sessionid + '; ds_user_id=CAFE'
     header_hash['x-ig-app-id'] = self.app_id
     headers = header_hash
-    response = requests.get(request_url, headers=headers, proxies=proxies, verify=False)
+    response = requests.get(request_url, headers=headers, proxies=proxies, verify=verify)
     response_hash = json.loads(response.text)
     outfilename = 'NEXTSET.json'
     thisoutfile = open(outfilename, 'w')
