@@ -263,7 +263,7 @@ class Instauser:
     header_hash['Cookie'] = 'sessionid=' + self.sessionid + '; ds_user_id=CAFE'
     header_hash['x-ig-app-id'] = self.app_id
     headers = header_hash
-    response = requests.get(request_url, headers=headers)
+    response = requests.get(request_url, headers=headers, proxies=proxies, verify=False)
     response_hash = json.loads(response.text)
     return response_hash
 
@@ -286,7 +286,7 @@ class Instauser:
     header_hash['Cookie'] = 'sessionid=' + self.sessionid + '; ds_user_id=CAFE'
     header_hash['x-ig-app-id'] = self.app_id
     headers = header_hash
-    response = requests.get(request_url, headers=headers)
+    response = requests.get(request_url, headers=headers, proxies=proxies, verify=False)
     response_hash = json.loads(response.text)
     return response_hash
 
@@ -307,7 +307,7 @@ class Instauser:
     header_hash['Cookie'] = 'sessionid=' + self.sessionid + '; ds_user_id=CAFE'
     header_hash['x-ig-app-id'] = self.app_id
     headers = header_hash
-    response = requests.get(request_url, headers=headers)
+    response = requests.get(request_url, headers=headers, proxies=proxies, verify=False)
     response_hash = json.loads(response.text)
     return response_hash
 
@@ -328,7 +328,7 @@ class Instauser:
     header_hash['Cookie'] = 'sessionid=' + self.sessionid + '; ds_user_id=CAFE'
     header_hash['x-ig-app-id'] = self.app_id
     headers = header_hash
-    response = requests.get(request_url, headers=headers)
+    response = requests.get(request_url, headers=headers, proxies=proxies, verify=False)
     response_hash = json.loads(response.text)
     return response_hash
 
@@ -646,7 +646,7 @@ class Instauser:
       header_hash['Cookie'] = 'sessionid=' + self.sessionid + '; ds_user_id=CAFE'
       header_hash['x-ig-app-id'] = self.app_id
       headers = header_hash
-      response = requests.get(request_url, headers=headers)
+      response = requests.get(request_url, headers=headers, proxies=proxies, verify=False)
       response_hash = json.loads(response.text)
       outfilename = 'NEXTSET.json'
       thisoutfile = open(outfilename, 'w')
@@ -670,7 +670,7 @@ class Instauser:
       header_hash['Cookie'] = 'sessionid=' + self.sessionid + '; ds_user_id=CAFE'
       header_hash['x-ig-app-id'] = self.app_id
       headers = header_hash
-      response = requests.get(request_url, headers=headers)
+      response = requests.get(request_url, headers=headers, proxies=proxies, verify=False)
       response_hash = json.loads(response.text)
       outfilename = 'NEXTSET.json'
       thisoutfile = open(outfilename, 'w')
