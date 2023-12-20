@@ -250,6 +250,13 @@ class Instauser:
   def get_first_set(self,username):
     """Method to get the first set of a user's posts"""
     debug = False
+    if not debug:
+      proxies = {}
+    else:
+      proxies = {
+        'http' : 'http://localhost:8888',
+        'https' : 'http://localhost:8888',
+      }
     request_url = 'https://www.instagram.com/api/v1/users/web_profile_info/?username=' + username
     header_hash = {
     }
@@ -266,6 +273,13 @@ class Instauser:
     """Method to get the first set of posts a user is tagged in"""
     doc_id = '17946422347485809'
     debug = False
+    if not debug:
+      proxies = {}
+    else:
+      proxies = {
+        'http' : 'http://localhost:8888',
+        'https' : 'http://localhost:8888',
+      }
     request_url = 'https://www.instagram.com/graphql/query/?doc_id=' + doc_id + '&variables={%22id%22%3A%22' + self.id + '%22%2C%22first%22%3A12}'
     header_hash = {
     }
@@ -280,6 +294,13 @@ class Instauser:
     """Method to get followers of a user beyond the first set"""
     time.sleep(1)
     debug = False
+    if not debug:
+      proxies = {}
+    else:
+      proxies = {
+        'http' : 'http://localhost:8888',
+        'https' : 'http://localhost:8888',
+      }
     request_url = 'https://www.instagram.com/api/v1/friendships/' + str(self.id) + '/followers/?count=' + str(count) + '&max_id=' + str(max_id) + '&search_surface=follow_list_page'
     header_hash = {
     }
@@ -294,6 +315,13 @@ class Instauser:
     """Method to get Instagram users a user is following beyond the first set"""
     time.sleep(1)
     debug = False
+    if not debug:
+      proxies = {}
+    else:
+      proxies = {
+        'http' : 'http://localhost:8888',
+        'https' : 'http://localhost:8888',
+      }
     request_url = 'https://www.instagram.com/api/v1/friendships/' + str(self.id) + '/following/?count=' + str(count) + '&max_id=' + str(max_id) + ''
     header_hash = {
     }
@@ -605,6 +633,13 @@ class Instauser:
     """Utility method to fetch next page of results of a user's posts."""
     if end_cursor:
       debug = False
+      if not debug:
+        proxies = {}
+      else:
+        proxies = {
+          'http' : 'http://localhost:8888',
+          'https' : 'http://localhost:8888',
+        }
       request_url = 'https://www.instagram.com/graphql/query/?doc_id=' + doc_id + '&variables=%7B%22id%22%3A%22' + user_id + '%22%2C%22after%22%3A%22' + end_cursor + '%22%2C%22first%22%3A' + num + '%7D'
       header_hash = {
       }
@@ -622,6 +657,13 @@ class Instauser:
     """Utility method to fetch next page of results of posts a user is tagged in."""
     if end_cursor:
       debug = False
+      if not debug:
+        proxies = {}
+      else:
+        proxies = {
+          'http' : 'http://localhost:8888',
+          'https' : 'http://localhost:8888',
+        }
       request_url = 'https://www.instagram.com/graphql/query/?doc_id=' + doc_id + '&variables=%7B%22id%22%3A%22' + user_id + '%22%2C%22after%22%3A%22' + end_cursor + '%22%2C%22first%22%3A' + num + '%7D'
       header_hash = {
       }
