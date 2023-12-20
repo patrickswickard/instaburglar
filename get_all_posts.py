@@ -1,7 +1,7 @@
 import instatools
 import json
 
-username = 'corvid_phalanges'
+username = 'drought_season'
 
 my_user = instatools.Instauser()
 my_user.get_user_from_web(username)
