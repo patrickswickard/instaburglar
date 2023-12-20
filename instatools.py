@@ -524,12 +524,15 @@ class Instauser:
     doc_id = '17991233890457762'
     user_id = self.get_user_id_from_response_hash(response_hash)
     num = '50'
+    has_next_page = self.get_has_next_page_from_response_hash(response_hash)
     end_cursor = self.get_end_cursor_from_response_hash(response_hash)
 
-    while end_cursor:
+#    while end_cursor:
+    while has_next_page:
       next_response_hash = self.get_next_response_hash(doc_id,user_id,end_cursor,num)
       this_list = self.list_data_from_response_hash(next_response_hash)
       all_data_list = all_data_list + this_list
+      has_next_page = self.get_has_next_page_from_response_hash(next_response_hash)
       end_cursor = self.get_end_cursor_from_response_hash(next_response_hash)
     return all_data_list
 
@@ -545,11 +548,14 @@ class Instauser:
     user_id = self.id
     num = '50'
     end_cursor = self.get_end_cursor_from_response_hash_tagged(response_hash)
-    while end_cursor:
+    has_next_page = self.get_has_next_page_from_response_hash_tagged(response_hash)
+#    while end_cursor:
+    while has_next_page:
       next_response_hash = self.get_next_response_hash_tagged(doc_id,user_id,end_cursor,num)
       this_list = self.list_data_from_response_hash_tagged(next_response_hash)
       all_data_list_tagged = all_data_list_tagged + this_list
       end_cursor = self.get_end_cursor_from_response_hash_tagged(next_response_hash)
+      has_next_page = self.get_has_next_page_from_response_hash_tagged(next_response_hash)
     return all_data_list_tagged
 
   def list_data_from_response_hash(self,response_hash):
@@ -605,6 +611,15 @@ class Instauser:
     user_id = user['id']
     return user_id
 
+  def get_has_next_page_from_response_hash(self,response_hash):
+    """Utility method to parse has_next_page from a response hash."""
+    data = response_hash['data']
+    user = data['user']
+    edge_owner_to_timeline_media = user['edge_owner_to_timeline_media']
+    page_info = edge_owner_to_timeline_media['page_info']
+    has_next_page = page_info['has_next_page']
+    return has_next_page
+
   def get_end_cursor_from_response_hash(self,response_hash):
     """Utility method to parse the end cursor from a response hash to get to next page of results of a user's posts."""
     data = response_hash['data']
@@ -616,6 +631,15 @@ class Instauser:
     if has_next_page:
       end_cursor = page_info['end_cursor']
     return end_cursor
+
+  def get_has_next_page_from_response_hash_tagged(self,response_hash):
+    """Utility method to parse has_next_page from a response hash to get to next page of results a user is tagged in."""
+    data = response_hash['data']
+    user = data['user']
+    edge_owner_to_timeline_media = user['edge_user_to_photos_of_you']
+    page_info = edge_owner_to_timeline_media['page_info']
+    has_next_page = page_info['has_next_page']
+    return has_next_page
 
   def get_end_cursor_from_response_hash_tagged(self,response_hash):
     """Utility method to parse the end cursor from a response hash to get to next page of results a user is tagged in."""
@@ -631,51 +655,51 @@ class Instauser:
 
   def get_next_response_hash(self,doc_id,user_id,end_cursor,num):
     """Utility method to fetch next page of results of a user's posts."""
-    if end_cursor:
-      debug = False
-      if not debug:
-        proxies = {}
-      else:
-        proxies = {
-          'http' : 'http://localhost:8888',
-          'https' : 'http://localhost:8888',
-        }
-      request_url = 'https://www.instagram.com/graphql/query/?doc_id=' + doc_id + '&variables=%7B%22id%22%3A%22' + user_id + '%22%2C%22after%22%3A%22' + end_cursor + '%22%2C%22first%22%3A' + num + '%7D'
-      header_hash = {
+    # note that end_cursor may be empty string
+    debug = False
+    if not debug:
+      proxies = {}
+    else:
+      proxies = {
+        'http' : 'http://localhost:8888',
+        'https' : 'http://localhost:8888',
       }
-      header_hash['Cookie'] = 'sessionid=' + self.sessionid + '; ds_user_id=CAFE'
-      header_hash['x-ig-app-id'] = self.app_id
-      headers = header_hash
-      response = requests.get(request_url, headers=headers, proxies=proxies, verify=False)
-      response_hash = json.loads(response.text)
-      outfilename = 'NEXTSET.json'
-      thisoutfile = open(outfilename, 'w')
-      thisoutfile.write(response.text)
-      return response_hash
+    request_url = 'https://www.instagram.com/graphql/query/?doc_id=' + doc_id + '&variables=%7B%22id%22%3A%22' + user_id + '%22%2C%22after%22%3A%22' + end_cursor + '%22%2C%22first%22%3A' + num + '%7D'
+    header_hash = {
+    }
+    header_hash['Cookie'] = 'sessionid=' + self.sessionid + '; ds_user_id=CAFE'
+    header_hash['x-ig-app-id'] = self.app_id
+    headers = header_hash
+    response = requests.get(request_url, headers=headers, proxies=proxies, verify=False)
+    response_hash = json.loads(response.text)
+    outfilename = 'NEXTSET.json'
+    thisoutfile = open(outfilename, 'w')
+    thisoutfile.write(response.text)
+    return response_hash
 
   def get_next_response_hash_tagged(self,doc_id,user_id,end_cursor,num):
     """Utility method to fetch next page of results of posts a user is tagged in."""
-    if end_cursor:
-      debug = False
-      if not debug:
-        proxies = {}
-      else:
-        proxies = {
-          'http' : 'http://localhost:8888',
-          'https' : 'http://localhost:8888',
-        }
-      request_url = 'https://www.instagram.com/graphql/query/?doc_id=' + doc_id + '&variables=%7B%22id%22%3A%22' + user_id + '%22%2C%22after%22%3A%22' + end_cursor + '%22%2C%22first%22%3A' + num + '%7D'
-      header_hash = {
+    # note that end_cursor may be empty string though never seen it for tagged in posts...
+    debug = False
+    if not debug:
+      proxies = {}
+    else:
+      proxies = {
+        'http' : 'http://localhost:8888',
+        'https' : 'http://localhost:8888',
       }
-      header_hash['Cookie'] = 'sessionid=' + self.sessionid + '; ds_user_id=CAFE'
-      header_hash['x-ig-app-id'] = self.app_id
-      headers = header_hash
-      response = requests.get(request_url, headers=headers, proxies=proxies, verify=False)
-      response_hash = json.loads(response.text)
-      outfilename = 'NEXTSET.json'
-      thisoutfile = open(outfilename, 'w')
-      thisoutfile.write(response.text)
-      return response_hash
+    request_url = 'https://www.instagram.com/graphql/query/?doc_id=' + doc_id + '&variables=%7B%22id%22%3A%22' + user_id + '%22%2C%22after%22%3A%22' + end_cursor + '%22%2C%22first%22%3A' + num + '%7D'
+    header_hash = {
+    }
+    header_hash['Cookie'] = 'sessionid=' + self.sessionid + '; ds_user_id=CAFE'
+    header_hash['x-ig-app-id'] = self.app_id
+    headers = header_hash
+    response = requests.get(request_url, headers=headers, proxies=proxies, verify=False)
+    response_hash = json.loads(response.text)
+    outfilename = 'NEXTSET.json'
+    thisoutfile = open(outfilename, 'w')
+    thisoutfile.write(response.text)
+    return response_hash
 
 class Instapost:
   """Creates an object corresponding to a particular Instagram post"""
