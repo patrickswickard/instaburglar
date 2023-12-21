@@ -143,10 +143,12 @@ class Instauser:
 
   def reads(self,thisjson):
     """Method which reads in an Instagram user's attributes from a json string in same format created by Instauser.dumps"""
+#    thishash = json.loads(thisjson)
+#    postobject = self.Instauser()
+#    postobject.readh(thishash)
+#    return postobject
     thishash = json.loads(thisjson)
-    postobject = self.Instauser()
-    postobject.readh(thishash)
-    return postobject
+    self.readh(thishash)
 
   def readh(self,thishash):
     """Method which reads in an Instagram user's attributes from a hash in same format created by Instauser.dumph"""
@@ -221,7 +223,8 @@ class Instauser:
   # method to get app id parameter which is probably static but maybe not?
   # in any case it is parsable at least for now
   # if this breaks try hard-coding it
-  def get_app_id(self,username):
+  @staticmethod
+  def get_app_id(username):
     """One-off method to read and report the hopefully static app id from Instagram website, this is generally hard-coded elsewhere."""
     debug = False
     if not debug:
@@ -275,7 +278,7 @@ class Instauser:
 
   # this method gets the first set of posts a user is tagged in
   # note the weird hard-coded doc_id which I am unsure about...
-  def get_first_set_tagged(self,username):
+  def get_first_set_tagged(self):
     """Method to get the first set of posts a user is tagged in"""
     doc_id = '17946422347485809'
     debug = False
@@ -298,7 +301,7 @@ class Instauser:
     response_hash = json.loads(response.text)
     return response_hash
 
-  def get_next_followers(self,username,count,max_id):
+  def get_next_followers(self,count,max_id):
     """Method to get followers of a user beyond the first set"""
     time.sleep(1)
     debug = False
@@ -321,7 +324,7 @@ class Instauser:
     response_hash = json.loads(response.text)
     return response_hash
 
-  def get_next_following(self,username,count,max_id):
+  def get_next_following(self,count,max_id):
     """Method to get Instagram users a user is following beyond the first set"""
     time.sleep(1)
     debug = False
@@ -344,35 +347,35 @@ class Instauser:
     response_hash = json.loads(response.text)
     return response_hash
 
-  def get_followers_list(self,username):
+  def get_followers_list(self):
     """Method to get a list of Instagram users who follow a particular user"""
     followers_list = []
     count = 100
     max_id = 0
-    response_hash = self.get_next_followers(username,count,max_id)
+    response_hash = self.get_next_followers(count,max_id)
     nextlist = response_hash['users']
     followers_list += nextlist
     next_max_id = response_hash.get('next_max_id','')
     while next_max_id:
       print('Followers: trying ' + 'next_max_id ' + str(next_max_id))
-      response_hash = self.get_next_followers(username,count,next_max_id)
+      response_hash = self.get_next_followers(count,next_max_id)
       nextlist = response_hash['users']
       followers_list += nextlist
       next_max_id = response_hash.get('next_max_id','')
     return followers_list
 
-  def get_following_list(self,username):
+  def get_following_list(self):
     """Method to get a list of Instagram users who are followed by a particular user"""
     following_list = []
     count = 100
     max_id = 0
-    response_hash = self.get_next_following(username,count,max_id)
+    response_hash = self.get_next_following(count,max_id)
     nextlist = response_hash['users']
     following_list += nextlist
     next_max_id = response_hash.get('next_max_id','')
     while next_max_id:
       print('Following: trying ' + 'next_max_id ' + str(next_max_id))
-      response_hash = self.get_next_following(username,count,next_max_id)
+      response_hash = self.get_next_following(count,next_max_id)
       nextlist = response_hash['users']
       following_list += nextlist
       next_max_id = response_hash.get('next_max_id','')
@@ -383,7 +386,7 @@ class Instauser:
     followers_set = set()
     followers_lists = []
     for i in range(3):
-      thislist = self.get_followers_list(username)
+      thislist = self.get_followers_list()
       followers_lists.append(thislist)
     count1 = 0
     count1hash = {}
@@ -406,7 +409,7 @@ class Instauser:
     following_set = set()
     following_lists = []
     for i in range(3):
-      thislist = self.get_following_list(username)
+      thislist = self.get_following_list()
       following_lists.append(thislist)
     count2 = 0
     count2hash = {}
@@ -530,48 +533,49 @@ class Instauser:
     """Method to retrieve all available posts by a particular Instagram user."""
     all_data_list = []
     response_hash = self.get_first_set(username)
-    this_list = self.list_data_from_response_hash(response_hash)
+    this_list = Instauser.list_data_from_response_hash(response_hash)
     all_data_list = all_data_list + this_list
 
     # hard-coded, hopefully always the same
     doc_id = '17991233890457762'
     user_id = Instauser.get_user_id_from_response_hash(response_hash)
     num = '50'
-    has_next_page = self.get_has_next_page_from_response_hash(response_hash)
-    end_cursor = self.get_end_cursor_from_response_hash(response_hash)
+    has_next_page = Instauser.get_has_next_page_from_response_hash(response_hash)
+    end_cursor = Instauser.get_end_cursor_from_response_hash(response_hash)
 
 #    while end_cursor:
     while has_next_page:
       next_response_hash = self.get_next_response_hash(doc_id,user_id,end_cursor,num)
-      this_list = self.list_data_from_response_hash(next_response_hash)
+      this_list = Instauser.list_data_from_response_hash(next_response_hash)
       all_data_list = all_data_list + this_list
-      has_next_page = self.get_has_next_page_from_response_hash(next_response_hash)
-      end_cursor = self.get_end_cursor_from_response_hash(next_response_hash)
+      has_next_page = Instauser.get_has_next_page_from_response_hash(next_response_hash)
+      end_cursor = Instauser.get_end_cursor_from_response_hash(next_response_hash)
     return all_data_list
 
-  def get_all_data_list_tagged(self,username):
+  def get_all_data_list_tagged(self):
     """Method to retrieve all available posts in which a particular Instagram user is tagged."""
     all_data_list_tagged = []
-    response_hash = self.get_first_set_tagged(username)
-    this_list = self.list_data_from_response_hash_tagged(response_hash)
+    response_hash = self.get_first_set_tagged()
+    this_list = Instauser.list_data_from_response_hash_tagged(response_hash)
     all_data_list_tagged = all_data_list_tagged + this_list
 
     # hard-coded, hopefully always the same
     doc_id = '17946422347485809'
     user_id = self.id
     num = '50'
-    end_cursor = self.get_end_cursor_from_response_hash_tagged(response_hash)
-    has_next_page = self.get_has_next_page_from_response_hash_tagged(response_hash)
+    end_cursor = Instauser.get_end_cursor_from_response_hash_tagged(response_hash)
+    has_next_page = Instauser.get_has_next_page_from_response_hash_tagged(response_hash)
 #    while end_cursor:
     while has_next_page:
       next_response_hash = self.get_next_response_hash_tagged(doc_id,user_id,end_cursor,num)
-      this_list = self.list_data_from_response_hash_tagged(next_response_hash)
+      this_list = Instauser.list_data_from_response_hash_tagged(next_response_hash)
       all_data_list_tagged = all_data_list_tagged + this_list
-      end_cursor = self.get_end_cursor_from_response_hash_tagged(next_response_hash)
-      has_next_page = self.get_has_next_page_from_response_hash_tagged(next_response_hash)
+      end_cursor = Instauser.get_end_cursor_from_response_hash_tagged(next_response_hash)
+      has_next_page = Instauser.get_has_next_page_from_response_hash_tagged(next_response_hash)
     return all_data_list_tagged
 
-  def list_data_from_response_hash(self,response_hash):
+  @staticmethod
+  def list_data_from_response_hash(response_hash):
     """Utility method to parse all post data from a query listing a user's posts."""
     batch_list = []
     data = response_hash['data']
@@ -589,7 +593,8 @@ class Instauser:
         batch_list.append(post_object.dumph())
     return batch_list
 
-  def list_data_from_response_hash_tagged(self,response_hash):
+  @staticmethod
+  def list_data_from_response_hash_tagged(response_hash):
     """Utility method to parse all post data from a query listing the posts a user is tagged in."""
     batch_list = []
     data = response_hash['data']
@@ -615,7 +620,8 @@ class Instauser:
     user_id = user['id']
     return user_id
 
-  def get_has_next_page_from_response_hash(self,response_hash):
+  @staticmethod
+  def get_has_next_page_from_response_hash(response_hash):
     """Utility method to parse has_next_page from a response hash."""
     data = response_hash['data']
     user = data['user']
@@ -624,7 +630,8 @@ class Instauser:
     has_next_page = page_info['has_next_page']
     return has_next_page
 
-  def get_end_cursor_from_response_hash(self,response_hash):
+  @staticmethod
+  def get_end_cursor_from_response_hash(response_hash):
     """Utility method to parse the end cursor from a response hash to get to next page of results of a user's posts."""
     data = response_hash['data']
     user = data['user']
@@ -636,7 +643,8 @@ class Instauser:
       end_cursor = page_info['end_cursor']
     return end_cursor
 
-  def get_has_next_page_from_response_hash_tagged(self,response_hash):
+  @staticmethod
+  def get_has_next_page_from_response_hash_tagged(response_hash):
     """Utility method to parse has_next_page from a response hash to get to next page of results a user is tagged in."""
     data = response_hash['data']
     user = data['user']
@@ -645,7 +653,8 @@ class Instauser:
     has_next_page = page_info['has_next_page']
     return has_next_page
 
-  def get_end_cursor_from_response_hash_tagged(self,response_hash):
+  @staticmethod
+  def get_end_cursor_from_response_hash_tagged(response_hash):
     """Utility method to parse the end cursor from a response hash to get to next page of results a user is tagged in."""
     data = response_hash['data']
     user = data['user']
