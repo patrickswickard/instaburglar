@@ -239,8 +239,8 @@ class Instauser:
     request_url = 'https://www.instagram.com/' + username + '/'
     headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/118.0'}
     response = requests.get(request_url, headers=headers, proxies=proxies, verify=verify)
-    raw_html = response.text
     responselines = response.text.splitlines()
+    app_id = 'UNDEFINED'
     for thisline in responselines:
       hit = re.search(r"APP_ID",thisline)
       if hit:
@@ -251,7 +251,7 @@ class Instauser:
           #thishash = json.loads(jsontext)
           app_id_hits = re.findall(r"\"APP_ID\":\"(.*?)\"",jsontext)
           app_id = app_id_hits[0]
-          return app_id
+    return app_id
 
   # this method gets the first set of a user's posts
   def get_first_set(self,username):
@@ -385,7 +385,7 @@ class Instauser:
     """Method to get a set of Instagram users who follow a particular user.  Because of Instagram's flakiness, it retrieves the list of followers three times and aggregates results.  Note this can take some time to complete."""
     followers_set = set()
     followers_lists = []
-    for i in range(3):
+    for _ in range(3):
       thislist = self.get_followers_list()
       followers_lists.append(thislist)
     count1 = 0
