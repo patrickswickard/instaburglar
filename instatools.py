@@ -388,16 +388,13 @@ class Instauser:
     for _ in range(3):
       thislist = self.get_followers_list()
       followers_lists.append(thislist)
-    count1 = 0
-    count1hash = {}
     for thislist in followers_lists:
       for user in thislist:
-        count1 += 1
         username = user.get('username','')
-        userid = user.get('pk','')
-        full_name = user.get('full_name','')
-        profile_pic_url = user.get('profile_pic_url','')
-        is_private = user.get('is_private',False)
+        #userid = user.get('pk','')
+        #full_name = user.get('full_name','')
+        #profile_pic_url = user.get('profile_pic_url','')
+        #is_private = user.get('is_private',False)
         if username in followers_set:
           pass
         else:
@@ -408,19 +405,16 @@ class Instauser:
     """Method to get a set of Instagram users who are followed by a particular user.  Because of Instagram's flakiness, it retrieves the list of followers three times and aggregates results.  Note this can take some time to complete."""
     following_set = set()
     following_lists = []
-    for i in range(3):
+    for _ in range(3):
       thislist = self.get_following_list()
       following_lists.append(thislist)
-    count2 = 0
-    count2hash = {}
     for thislist in following_lists:
       for user in thislist:
-        count2 += 1
         username = user.get('username','')
-        userid = user.get('pk','')
-        full_name = user.get('full_name','')
-        profile_pic_url = user.get('profile_pic_url','')
-        is_private = user.get('is_private',False)
+        #userid = user.get('pk','')
+        #full_name = user.get('full_name','')
+        #profile_pic_url = user.get('profile_pic_url','')
+        #is_private = user.get('is_private',False)
         if username in following_set:
           pass
         else:
