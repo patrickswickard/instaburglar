@@ -141,10 +141,11 @@ class Instauser:
     thishash = self.dumph()
     return json.dumps(thishash)
 
-  def reads(self,json):
+  def reads(self,thisjson):
     """Method which reads in an Instagram user's attributes from a json string in same format created by Instauser.dumps"""
-    thishash = json.reads(json)
+    thishash = json.loads(thisjson)
     postobject = self.Instauser()
+    postobject.readh(thishash)
     return postobject
 
   def readh(self,thishash):
@@ -877,9 +878,9 @@ class Instapost:
     return json.dumps(thishash)
 
   # TODO this is WRONG
-  def reads(self,json):
+  def reads(self,thisjson):
     """Method to read in post attributes from a json string and create a post object"""
-    thishash = json.reads(json)
+    thishash = json.loads(thisjson)
     postobject = self.Instapost()
     return postobject
 
