@@ -455,6 +455,7 @@ class Instauser:
         edge_follow = thisuser.get('edge_follow',{})
         if edge_follow:
           follow_count = edge_follow.get('count',0)
+        self.follow_count = follow_count
         self.followed_by_count = followed_by_count
         #######
         self.follows_viewer = thisuser.get('follows_viewer',False)
@@ -576,7 +577,6 @@ class Instauser:
     data = response_hash['data']
     user = data['user']
     edge_owner_to_timeline_media = user['edge_owner_to_timeline_media']
-    page_info = edge_owner_to_timeline_media['page_info']
     edges = edge_owner_to_timeline_media['edges']
     for thisedge in edges:
       node = thisedge['node']
@@ -809,7 +809,7 @@ class Instapost:
     self.number_of_likes = number_of_likes
 ##############################################################################
     self.location = thisnode.get('location','')
-    # after this point these values only exist if we have subposts 
+    # after this point these values only exist if we have subposts
     my_sidecar_to_children_list = []
     sidecar_to_children = thisnode.get('edge_sidecar_to_children',{})
     if sidecar_to_children:
