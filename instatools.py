@@ -1,7 +1,7 @@
 import json
-import requests
 import re
 import time
+import requests
 import mysecret
 
 class Instauser:
@@ -68,7 +68,7 @@ class Instauser:
     self.connected_fb_page = ''
     self.pronouns = []
     # special
-    self.sessionid = self.get_sessionid()
+    self.sessionid = Instauser.get_sessionid()
     self.app_id = '936619743392459' # hopefully this is hard-coded, leaving unused method just in case
 
   def dumph(self):
@@ -210,7 +210,8 @@ class Instauser:
     self.connected_fb_page = thishash['connected_fb_page']
     self.pronouns = thishash['pronouns']
 
-  def get_sessionid(self):
+  @staticmethod
+  def get_sessionid():
     """Method that reads in a sessionid from mysecret.py .  This could be handled smoother."""
     secret = mysecret.Mysecret()
     sessionid = secret.sid
@@ -532,7 +533,7 @@ class Instauser:
 
     # hard-coded, hopefully always the same
     doc_id = '17991233890457762'
-    user_id = self.get_user_id_from_response_hash(response_hash)
+    user_id = Instauser.get_user_id_from_response_hash(response_hash)
     num = '50'
     has_next_page = self.get_has_next_page_from_response_hash(response_hash)
     end_cursor = self.get_end_cursor_from_response_hash(response_hash)
@@ -614,7 +615,8 @@ class Instauser:
         batch_list.append(post_object.dumph())
     return batch_list
 
-  def get_user_id_from_response_hash(self,response_hash):
+  @staticmethod
+  def get_user_id_from_response_hash(response_hash):
     """Utility method to parse a user's user_id from a response hash."""
     data = response_hash['data']
     user = data['user']
@@ -746,10 +748,11 @@ class Instapost:
     self.location = ''
     self.sidecar_to_children_list = []
     # special
-    self.sessionid = self.get_sessionid()
+    self.sessionid = Instapost.get_sessionid()
     self.app_id = '936619743392459' # hopefully this is hard-coded, leaving unused method just in case
 
-  def get_sessionid(self):
+  @staticmethod
+  def get_sessionid():
     """Utility method to get the session id from mysecret.py"""
     secret = mysecret.Mysecret()
     sessionid = secret.sid
@@ -873,6 +876,7 @@ class Instapost:
     thishash = self.dumph()
     return json.dumps(thishash)
 
+  # TODO this is WRONG
   def reads(self,json):
     """Method to read in post attributes from a json string and create a post object"""
     thishash = json.reads(json)
