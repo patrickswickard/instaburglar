@@ -182,7 +182,7 @@ class Instauser:
     self.is_guardian_of_viewer = thishash['is_guardian_of_viewer']
     self.is_supervised_by_viewer = thishash['is_supervised_by_viewer']
     self.is_supervised_user = thishash['is_supervised_user']
-    self.is_embed_disabled = thishash['is_embeds_disabled']
+    self.is_embeds_disabled = thishash['is_embeds_disabled']
     self.is_joined_recently = thishash['is_joined_recently']
     self.guardian_id = thishash['guardian_id']
     self.business_address_json = thishash['business_address_json']
@@ -475,7 +475,7 @@ class Instauser:
         self.is_guardian_of_viewer = thisuser.get('is_guardian_of_viewer',False)
         self.is_supervised_by_viewer = thisuser.get('is_supervised_by_viewer',False)
         self.is_supervised_user = thisuser.get('is_supervised_user',False)
-        self.is_embed_disabled = thisuser.get('is_embed_disabled',False)
+        self.is_embeds_disabled = thisuser.get('is_embeds_disabled',False)
         self.is_joined_recently = thisuser.get('is_joined_recently',False)
         self.guardian_id = thisuser.get('guardian_id','')
         self.business_address_json = thisuser.get('business_address_json','')
@@ -578,10 +578,6 @@ class Instauser:
     edge_owner_to_timeline_media = user['edge_owner_to_timeline_media']
     page_info = edge_owner_to_timeline_media['page_info']
     edges = edge_owner_to_timeline_media['edges']
-    has_next_page = page_info['has_next_page']
-    end_cursor = ''
-    if has_next_page:
-      end_cursor = page_info['end_cursor']
     for thisedge in edges:
       node = thisedge['node']
       post_object = Instapost()
@@ -599,12 +595,7 @@ class Instauser:
     data = response_hash['data']
     user = data['user']
     edge_owner_to_timeline_media = user['edge_user_to_photos_of_you']
-    page_info = edge_owner_to_timeline_media['page_info']
     edges = edge_owner_to_timeline_media['edges']
-    has_next_page = page_info['has_next_page']
-    end_cursor = ''
-    if has_next_page:
-      end_cursor = page_info['end_cursor']
     for thisedge in edges:
       node = thisedge['node']
       post_object = Instapost()
@@ -688,8 +679,8 @@ class Instauser:
     response = requests.get(request_url, headers=headers, proxies=proxies, verify=verify)
     response_hash = json.loads(response.text)
     outfilename = 'NEXTSET.json'
-    thisoutfile = open(outfilename, 'w')
-    thisoutfile.write(response.text)
+    with open(outfilename,'w',encoding="utf-8") as thisoutfile:
+      thisoutfile.write(response.text)
     return response_hash
 
   def get_next_response_hash_tagged(self,doc_id,user_id,end_cursor,num):
@@ -714,8 +705,8 @@ class Instauser:
     response = requests.get(request_url, headers=headers, proxies=proxies, verify=verify)
     response_hash = json.loads(response.text)
     outfilename = 'NEXTSET.json'
-    thisoutfile = open(outfilename, 'w')
-    thisoutfile.write(response.text)
+    with open(outfilename,'w',encoding="utf-8") as thisoutfile:
+      thisoutfile.write(response.text)
     return response_hash
 
 class Instapost:
@@ -880,9 +871,12 @@ class Instapost:
   # TODO this is WRONG
   def reads(self,thisjson):
     """Method to read in post attributes from a json string and create a post object"""
+    #thishash = json.loads(thisjson)
+    #postobject = self.Instapost()
+    #postobject.readh(thishash)
+    #return postobject
     thishash = json.loads(thisjson)
-    postobject = self.Instapost()
-    return postobject
+    self.readh(thishash)
 
   def readh(self,posthash):
     """Method to read in post attributes from a json string and create a hash corresponding to those"""
