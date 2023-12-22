@@ -1,15 +1,12 @@
+"""Test code to get and report followers/following, report mutuals etc"""
 import instatools
-import json
 
-username = 'drought_season'
-
-#secret = mysecret.Mysecret()
-#sessionid = secret.sid
+USERNAME= 'drought_season'
 
 my_user = instatools.Instauser()
-my_user.get_user_from_web(username)
-my_user_followers_set = my_user.get_followers_list_set(username)
-my_user_following_set = my_user.get_following_list_set(username)
+my_user.get_user_from_web(USERNAME)
+my_user_followers_set = my_user.get_followers_list_set(USERNAME)
+my_user_following_set = my_user.get_following_list_set(USERNAME)
 
 print('mutuals:')
 my_user_mutuals = my_user_followers_set.intersection(my_user_following_set)
