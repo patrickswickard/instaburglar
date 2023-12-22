@@ -1,3 +1,4 @@
+"""Tools for reading information about Instagram users and posts"""
 import json
 import re
 import time
