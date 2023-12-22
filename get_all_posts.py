@@ -1,14 +1,15 @@
-import instatools
+"""Test get all posts"""
 import json
+import instatools
 
-username = 'drought_season'
+USERNAME = 'drought_season'
 
 my_user = instatools.Instauser()
-my_user.get_user_from_web(username)
+my_user.get_user_from_web(USERNAME)
 
-all_data_list = my_user.get_all_data_list(username)
+all_data_list = my_user.get_all_data_list(USERNAME)
 
 print(json.dumps(all_data_list))
-outfilename = username + '_all_data_list.json'
-thisoutfile = open(outfilename, 'w')
-thisoutfile.write(json.dumps(all_data_list))
+OUTFILENAME = USERNAME + '_all_data_list.json'
+with open(OUTFILENAME,'w',encoding="utf-8") as thisoutfile:
+  thisoutfile.write(json.dumps(all_data_list))
