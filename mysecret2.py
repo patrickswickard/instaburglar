@@ -1,4 +1,6 @@
+"""Hold actual secrets"""
 class Mysecret:
+  """Class for holding secrets, this is probably dumb"""
   def __init__(self):
     self.userid = 'FAKEUSERID'
     self.password = 'FAKEPASSWORD'
