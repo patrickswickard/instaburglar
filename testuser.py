@@ -1,8 +1,9 @@
+"""Testing get user from web functionality"""
 import instatools
 
-username = 'bugbobbie'
+USERNAME = 'bugbobbie'
 
 my_user = instatools.Instauser()
-my_user.get_user_from_web(username)
+my_user.get_user_from_web(USERNAME)
 
 print(my_user.dumps())
