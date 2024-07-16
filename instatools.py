@@ -252,7 +252,10 @@ class Instauser:
           #thishash = json.loads(jsontext)
           app_id_hits = re.findall(r"\"APP_ID\":\"(.*?)\"",jsontext)
           app_id = app_id_hits[0]
-    return app_id
+          # returning first we see
+          return(app_id)
+    # FIXME
+    return 'WTF!!!'
 
   # this method gets the first set of a user's posts
   def get_first_set(self,username):
